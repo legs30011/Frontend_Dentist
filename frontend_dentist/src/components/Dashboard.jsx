@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../utils/axiosConfig'; // Asegúrate de que axios esté configurado correctamente
+import axios from '../utils/axiosConfig';
 
 function Dashboard() {
   const [userData, setUserData] = useState(null);
@@ -11,30 +11,24 @@ function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
-      navigate('/login'); // Redirigir al login si no hay token
-      return; // Salir de la función si no hay token
+      navigate('/login');
+      return;
     }
 
-    // Obtener datos del usuario si el token es válido
     const fetchUserData = async () => {
       try {
         const response = await axios.get('/auth/profile', {
-          Headers: {
+          headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        // Establecer los datos del usuario
         setUserData(response.data);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          setErrorMessage('No autorizado, token inválido o expirado');
-          navigate('/login'); // Redirigir a login si el token es inválido o expiró
-        } else {
-          setErrorMessage('Error al obtener los datos del usuario');
-        }
+        setErrorMessage('Error al obtener los datos del usuario');
+        navigate('/login');
       } finally {
         setLoading(false);
       }
@@ -44,18 +38,20 @@ function Dashboard() {
   }, [navigate]);
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      {loading ? (
-        <p>Cargando...</p>
-      ) : errorMessage ? (
-        <p>{errorMessage}</p>
-      ) : (
-        <div>
-          <p>Bienvenido, {userData?.name}</p>
-          <p>Correo: {userData?.email}</p>
-        </div>
-      )}
+    <div className="flex items-center justify-center min-h-screen bg-dentist-light-gray">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-center text-dentist-dark-green">Dashboard</h2>
+        {loading ? (
+          <p className="text-center">Cargando...</p>
+        ) : errorMessage ? (
+          <p className="text-red-500 text-center">{errorMessage}</p>
+        ) : (
+          <div className="text-center">
+            <p className="text-lg">Bienvenido, <span className="font-semibold">{userData?.name}</span></p>
+            <p className="text-dentist-dark-green">Correo: {userData?.email}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
