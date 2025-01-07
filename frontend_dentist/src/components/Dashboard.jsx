@@ -1,56 +1,27 @@
-/* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+// src/components/Dashboard.jsx
 import { useNavigate } from 'react-router-dom';
-import axios from '../utils/axiosConfig';
 
 function Dashboard() {
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('/auth/profile', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setUserData(response.data);
-      } catch (error) {
-        setErrorMessage('Error al obtener los datos del usuario');
-        navigate('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [navigate]);
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-dentist-light-gray">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center text-dentist-dark-green">Dashboard</h2>
-        {loading ? (
-          <p className="text-center">Cargando...</p>
-        ) : errorMessage ? (
-          <p className="text-red-500 text-center">{errorMessage}</p>
-        ) : (
-          <div className="text-center">
-            <p className="text-lg">Bienvenido, <span className="font-semibold">{userData?.name}</span></p>
-            <p className="text-dentist-dark-green">Correo: {userData?.email}</p>
-          </div>
-        )}
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Bienvenido al Dashboard</h1>
+      <div className="grid grid-cols-2 gap-4">
+        <div 
+          className="p-4 bg-blue-500 text-white rounded-lg cursor-pointer text-center"
+          onClick={() => navigate('/appointment')}
+        >
+          <h2 className="text-xl font-semibold">📅 Ver Citas</h2>
+          <p>Administra y revisa tus citas programadas.</p>
+        </div>
+        <div 
+          className="p-4 bg-green-500 text-white rounded-lg cursor-pointer text-center"
+          onClick={() => navigate('/medicines')}
+        >
+          <h2 className="text-xl font-semibold">💊 Ver Medicinas</h2>
+          <p>Consulta y gestiona la lista de medicamentos.</p>
+        </div>
       </div>
     </div>
   );
